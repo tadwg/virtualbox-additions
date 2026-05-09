@@ -41,9 +41,8 @@ make BD=$BD GNUs=$GNUs GNU_BD=$GNU_BD GNUi386=$GNUi386
 
 ## 導入方法
 
-1. VirtualBox のマシン設定で「ポインティングデバイス」を **「USBタブレット」** に変更
-2. `vboxmousegpl` を超漢字V の適切なディレクトリに配置
-3. `STARTUP.CMD` に追加組み込みドライバとして登録
+1. `vboxmousegpl` を超漢字V の /SYS に配置
+2. `STARTUP.CMD` に追加組み込みドライバとして登録
 
 ```
 kerext  vboxmousegpl    !23
@@ -79,4 +78,4 @@ kerext  vboxmousegpl    !23
 
 GNU General Public License v2 or later
 
-Copyright (C) 2024
+Copyright (C) 2026
