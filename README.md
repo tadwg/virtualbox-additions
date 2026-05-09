@@ -68,6 +68,10 @@ kerext  vboxmousegpl    !23
 | `0xFFFD000C` | ReportGuestInfo: request 失敗 |
 | `0xFFFD000D` | ReportGuestInfo: VBox 側エラー |
 
+## ビルド環境
+
+- [btron3sdk-linux](https://github.com/tadwg/btron3sdk-linux) — Podman/Docker で構築できる BTRON3 クロス開発環境
+
 ## 参考資料
 
 - [超漢字 PCI デバイス用デバイスドライバ説明書](http://www.chokanji.com/developer/info/pcidrv.html)
