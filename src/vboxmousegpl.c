@@ -12,6 +12,9 @@
  *     https://yashiromann.sakura.ne.jp/prog/favo430/favo430.tar.gz
  *   VirtualBox OSE ソースコード VBox/VMMDev.h
  *
+ * ソースコード:
+ *   https://github.com/tadwg/virtualbox-additions
+ *
  * Copyright (C) 2024
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
