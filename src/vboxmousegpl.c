@@ -151,6 +151,8 @@ static W    gIrqNo                = -1;
 static volatile BOOL gLoopFlag       = TRUE;
 static volatile BOOL gPollTaskActive = FALSE;
 static W             gGetMouseDbgCount = 0; /* get_mouse ログ抑制カウンタ */
+static UH            gVBoxMajor = 0;        /* VirtualBox メジャーバージョン */
+static UH            gVBoxMinor = 0;        /* VirtualBox マイナーバージョン */
 static W             gLastVx    = -1;       /* 前回送信した vx            */
 static W             gLastVy    = -1;       /* 前回送信した vy            */
 static W             gLastMain  = -1;       /* 前回送信した main_btn      */
@@ -343,6 +345,8 @@ static W vmmdev_get_host_version(VOID)
         return -(ED_VBOX_HOSTVER_REQ);
     if (gReqGuestBuf.header.rc != 0)
         return -(ED_VBOX_HOSTVER_RC);
+    gVBoxMajor = gReqGuestBuf.major;
+    gVBoxMinor = gReqGuestBuf.minor;
     DEBUG_PRINT(("vboxmousegpl: VBox version %d.%d.%d (r%d) features=0x%08X\n",
                  gReqGuestBuf.major, gReqGuestBuf.minor,
                  gReqGuestBuf.build, gReqGuestBuf.revision,
@@ -517,17 +521,29 @@ static VOID poll_task(W *pParam)
         dly_tsk(10);    /* 10ms 待機 */
         main_btn = 0;
         /* NEW_PROTOCOL: GetMouseStatusEx を優先使用 */
-        if (vmmdev_get_mouse_status_ex(&vx, &vy, &main_btn) == 0) {
-            W sub_btn = (gReqGetEx->fButtons & VMMDEV_MOUSE_BUTTON_RIGHT)  ? 1 : 0;
-            W mid_btn = (gReqGetEx->fButtons & VMMDEV_MOUSE_BUTTON_MIDDLE) ? 1 : 0;
-            W wheel   = (W)gReqGetEx->dz;
-            /* 前回値と比較して変化があった場合のみ kbpd に送信 */
-            if (vx != gLastVx || vy != gLastVy || main_btn != gLastMain
-                || sub_btn || mid_btn || wheel != 0) {
-                post_pointer_event(vx, vy, main_btn, sub_btn, wheel, mid_btn);
-                gLastVx   = vx;
-                gLastVy   = vy;
-                gLastMain = main_btn;
+        /* VBox 7.0 以降: GetMouseStatusEx (ボタン・ホイール対応)
+         * VBox 6.x 以前: GetMouseStatus にフォールバック (座標のみ) */
+        if (gVBoxMajor >= 7) {
+            if (vmmdev_get_mouse_status_ex(&vx, &vy, &main_btn) == 0) {
+                W sub_btn = (gReqGetEx->fButtons & VMMDEV_MOUSE_BUTTON_RIGHT)  ? 1 : 0;
+                W mid_btn = (gReqGetEx->fButtons & VMMDEV_MOUSE_BUTTON_MIDDLE) ? 1 : 0;
+                W wheel   = (W)gReqGetEx->dz;
+                if (vx != gLastVx || vy != gLastVy || main_btn != gLastMain
+                    || sub_btn || mid_btn || wheel != 0) {
+                    post_pointer_event(vx, vy, main_btn, sub_btn, wheel, mid_btn);
+                    gLastVx   = vx;
+                    gLastVy   = vy;
+                    gLastMain = main_btn;
+                }
+            }
+        } else {
+            /* VBox 6.x: GetMouseStatus (requestType=1) で座標のみ取得 */
+            if (vmmdev_get_mouse_status(&vx, &vy) == 0) {
+                if (vx != gLastVx || vy != gLastVy) {
+                    post_pointer_event(vx, vy, 0, 0, 0, 0);
+                    gLastVx = vx;
+                    gLastVy = vy;
+                }
             }
         }
     }
