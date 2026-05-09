@@ -270,9 +270,11 @@ static W vmmdev_get_mouse_status(W *px, W *py)
         }
         return -1;
     }
-    if (!(gReqGet->mouseFeatures & VMMDEV_MOUSE_HOST_CAN_ABSOLUTE)) {
+    /* HOST_WANTS_ABSOLUTE (bit1) で判定。
+     * 旧定数 HOST_CAN_ABSOLUTE (bit3) は VMMDev.h に存在しない。 */
+    if (!(gReqGet->mouseFeatures & VMMDEV_MOUSE_HOST_WANTS_ABSOLUTE)) {
         if (gGetMouseDbgCount < 3) {
-            DEBUG_PRINT(("vboxmousegpl: get_mouse no HOST_CAN_ABSOLUTE features=0x%08X\n",
+            DEBUG_PRINT(("vboxmousegpl: get_mouse no HOST_WANTS_ABSOLUTE features=0x%08X\n",
                          gReqGet->mouseFeatures));
             gGetMouseDbgCount++;
         }
