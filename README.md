@@ -9,11 +9,13 @@ BTRON3 の kbpd ドライバにポインタイベントとして渡します。
 ## 機能
 
 - VMMDev PCI デバイス (Vendor: 0x80EE, Device: 0xCAFE) を使用
-- `GetMouseStatusEx` (requestType=223) による絶対座標取得
+- `GetMouseStatusEx` (requestType=223) による絶対座標・ボタン取得 (VBox 7.0 以降)
+- `GetMouseStatus` (requestType=1) へのフォールバック (VBox 6.x)
 - `NEW_PROTOCOL` フラグ (`VMMDEV_MOUSE_NEW_PROTOCOL`) 対応
-- 左ボタン / 右ボタン / ホイール回転 / ホイールプッシュに対応
+- 左ボタン / 右ボタン / ホイール回転 / ホイールプッシュに対応 (VBox 7.0 以降)
 - ポーリングモード動作（10ms 間隔）
-- 割り込みモードのコードも含む（現在はポーリングモード強制中）
+- 割り込みモードのコードも含むが、kbpd メールボックスへの送信後に
+  read フラグの待ち処理（`dly_tsk`）が発生するため、現在は割り込みを使用していない
 
 ## ファイル構成
 
