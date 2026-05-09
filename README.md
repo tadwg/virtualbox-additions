@@ -1,5 +1,7 @@
 # VirtualBox Guest Additions Mouse Driver for BTRON3 (超漢字V)
 
+> このリポジトリのコードは [Claude Sonnet 4.6](https://www.anthropic.com/claude) (Anthropic) の支援を受けて書かれました。
+
 VirtualBox 上で動作する超漢字V 向けのマウスドライバです。  
 VirtualBox の VMMDev PCI デバイス経由でホストのマウス絶対座標を取得し、  
 BTRON3 の kbpd ドライバにポインタイベントとして渡します。
