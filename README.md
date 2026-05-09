@@ -27,15 +27,38 @@ bin/
 
 ## ビルド方法
 
-超漢字クロス開発環境 (brightv) が必要です。
+超漢字クロス開発環境 (brightv) が必要です。  
+[tadwg/btron3sdk-linux](https://github.com/tadwg/btron3sdk-linux) を使うと、
+Podman/Docker コンテナで環境を簡単に構築できます。
 
 ```bash
-# リリースビルド
-cd pcat/
+# btron3sdk-linux でコンテナをビルド
+git clone https://github.com/tadwg/btron3sdk-linux
+cd btron3sdk-linux
+podman build -t btron3sdk:latest .
+
+# このリポジトリをクローンしてコンテナ内でビルド
+git clone https://github.com/tadwg/virtualbox-additions
+cd virtualbox-additions/src
+podman run --rm -it -v $PWD:/workspace:z btron3sdk:latest bash -c "
+  source /usr/local/brightv/env.sh
+  mkdir -p /workspace/../pcat
+  ln -sf ../src/Makefile /workspace/../pcat/Makefile
+  cd /workspace/../pcat
+  make BD=\$BD GNUs=\$GNUs GNU_BD=\$GNU_BD GNUi386=\$GNUi386
+"
+```
+
+または `driver/` 以下に配置して make する方法:
+
+```bash
+# コンテナ内で
+source /usr/local/brightv/env.sh
+cd $BD/driver/vboxmousegpl/pcat
 make BD=$BD GNUs=$GNUs GNU_BD=$GNU_BD GNUi386=$GNUi386
 
 # デバッグビルド
-cd pcat.debug/
+cd $BD/driver/vboxmousegpl/pcat.debug
 make BD=$BD GNUs=$GNUs GNU_BD=$GNU_BD GNUi386=$GNUi386
 ```
 
@@ -68,15 +91,12 @@ kerext  vboxmousegpl    !23
 | `0xFFFD000C` | ReportGuestInfo: request 失敗 |
 | `0xFFFD000D` | ReportGuestInfo: VBox 側エラー |
 
-## ビルド環境
-
-- [btron3sdk-linux](https://github.com/tadwg/btron3sdk-linux) — Podman/Docker で構築できる BTRON3 クロス開発環境
-
 ## 参考資料
 
 - [超漢字 PCI デバイス用デバイスドライバ説明書](http://www.chokanji.com/developer/info/pcidrv.html)
 - [favo430 (Wacom FAVO USB タブレットドライバ for BTRON3, GPL)](https://yashiromann.sakura.ne.jp/prog/favo430/favo430.tar.gz)
 - [VirtualBox OSE VMMDev.h](https://www.virtualbox.org/svn/vbox/trunk/include/VBox/VMMDev.h)
+- [tadwg/btron3sdk-linux — BTRON3 クロス開発環境](https://github.com/tadwg/btron3sdk-linux)
 
 ## ライセンス
 
