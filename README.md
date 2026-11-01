@@ -31,6 +31,18 @@ bin/
 
 ## ビルド方法
 
+GitHub では、`src/` の変更を main に push すると GitHub Actions (`.github/workflows/build.yml`) が
+[tadwg/btron3sdk-linux](https://github.com/tadwg/btron3sdk-linux) の開発環境でビルドし、
+`bin/` を更新してコミットします (Actions タブから手動実行も可)。
+
+手元でビルドする場合 (btron3sdk イメージを作成済みのとき):
+
+```bash
+podman run --rm -v $PWD:/workspace:Z btron3sdk:latest bash /workspace/build.sh
+```
+
+以下は従来の手順です。
+
 超漢字クロス開発環境 (brightv) が必要です。  
 [tadwg/btron3sdk-linux](https://github.com/tadwg/btron3sdk-linux) を使うと、
 Podman/Docker コンテナで環境を簡単に構築できます。
