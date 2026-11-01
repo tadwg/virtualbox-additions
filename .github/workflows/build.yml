@@ -1,5 +1,5 @@
 # ドライバのビルド: src の変更を main に push すると、btron3sdk コンテナ
-# (tadwg/btron3sdk-linux の Dockerfile) でビルドし、bin/ を更新してコミットする.
+# (tadwg/btron3sdk-linux の sdk/Dockerfile) でビルドし、bin/ を更新してコミットする.
 name: build
 
 on:
@@ -36,7 +36,7 @@ jobs:
       - name: Build btron3sdk image
         uses: docker/build-push-action@v6
         with:
-          context: .btron3sdk
+          context: .btron3sdk/sdk
           load: true
           push: false
           tags: btron3sdk:latest
